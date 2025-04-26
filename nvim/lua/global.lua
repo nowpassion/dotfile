@@ -25,13 +25,6 @@ vim.opt.showmatch = true
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 
--- For C, C++, ASM
-vim.cmd('filetype plugin on')
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = {"c", "cpp", "h", "hpp", "cc", "c++", "asm"},
-  command = "set colorcolumn=88"
-})
-
 -- Encoding
 vim.opt.fileencodings = {'utf-8', 'euc-kr'}
 
@@ -50,6 +43,7 @@ vim.cmd('call plug#begin()')
 vim.cmd [[
 Plug 'zootedb0t/citruszest.nvim'
 Plug 'folke/tokyonight.nvim'
+Plug 'loctvl842/monokai-pro.nvim'
 ]]
 
 -- lualine, bufferline
@@ -118,14 +112,9 @@ Plug 'CopilotC-Nvim/CopilotChat.nvim'
 
 vim.cmd('call plug#end()')
 
--- Colorscheme
-vim.cmd('syntax on')
-vim.cmd("colorscheme tokyonight-night")
--- vim.cmd("colorscheme citruszest")
--- Override Highlighting Setting
-vim.api.nvim_set_hl(0, "ColorColumn", {bg = "#4B0082"})
-
+--
 -- Files
+--
 require("plugin_settings.lspconfig")
 require("plugin_settings.telescope")
 require("plugin_settings.nvim-cmp")
@@ -140,4 +129,5 @@ require("plugin_settings.github_copilot")
 
 require("cws")
 require("keymap")
+require("colorscheme")
 
