@@ -1,8 +1,21 @@
 -- Colorscheme
 vim.cmd('syntax on')
-vim.cmd("colorscheme monokai-pro")
--- vim.cmd("colorscheme tokyonight-night")
--- vim.cmd("colorscheme citruszest")
+
+-- monokai-pro.nvim/lua/monokai-pro/theme/editor.lua
+-- monokai-pro.nvim/lua/monokai-pro/theme/syntax.lua
+require("monokai-pro").setup({
+	override = function()
+		return {
+			Normal = { bg = "#101010" },
+			Type = { fg = "#FF6188" },
+		}
+	end
+})
+
+vim.cmd([[colorscheme monokai-pro]])
+
+-- vim.cmd([[colorscheme tokyonight-night]])
+-- vim.cmd([[colorscheme citruszest]])
 
 -- Override Highlighting Setting
 vim.api.nvim_set_hl(0, "ColorColumn", {bg = "#4B0082"})
