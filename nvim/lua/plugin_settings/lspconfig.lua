@@ -1,6 +1,6 @@
 -- LUA config & plugins
 -- Inlay hints
-vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({0}),{0})
+-- vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({0}),{0})
 
 -- Rust Analyzer
 vim.lsp.enable('rust_analyzer')
