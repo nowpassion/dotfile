@@ -25,7 +25,7 @@ vim.api.nvim_set_keymap('n', '<F3>', ':Telescope file_browser<CR>', { noremap = 
 vim.api.nvim_set_keymap('n', '<F4>', ':Vista!!<CR>', { noremap = true })
 vim.api.nvim_set_keymap('n', '<F5>', ':Telescope fd<CR>', { noremap = true })
 vim.api.nvim_set_keymap('n', '<F6>', ':noh<CR>', { noremap = true })
-vim.api.nvim_set_keymap('n', '<F7>', ':ClangdSwitchSourceHeader<CR>', { noremap = true })
+vim.api.nvim_set_keymap('n', '<F7>', ':LspClangdSwitchSourceHeader<CR>', { noremap = true })
 vim.api.nvim_set_keymap('n', '<F8>', ':LspStop<CR>', { noremap = true })
 
 -- Bufferhint
