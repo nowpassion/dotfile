@@ -78,7 +78,7 @@ require'lsp_signature'.setup(cfg) -- no need to specify bufnr if you don't use t
 
 -- You can also do this inside lsp on_attach
 -- note: on_attach deprecated
-require'lsp_signature'.on_attach(cfg, bufnr) -- no need to specify bufnr if you don't use toggle_key
+-- require'lsp_signature'.on_attach(cfg, bufnr) -- no need to specify bufnr if you don't use toggle_key
 
 --[[
 vim.keymap.set({ 'n' }, '<C-k>', function() require('lsp_signature').toggle_float_win() end, { silent = true, noremap = true, desc = 'toggle signature' })
