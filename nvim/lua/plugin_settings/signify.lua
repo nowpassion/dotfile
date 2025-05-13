@@ -3,6 +3,7 @@ vim.g.signify_line_highlight = 0
 vim.g.signify_number_highlight = 0
 vim.g.signify_realtime = 1
 vim.g.signify_vcs_list = { 'git', 'svn', 'cvs' }
+vim.g.signify_sign_delete = 'X'
 vim.api.nvim_create_autocmd("User", {
   pattern = "SignifyHunk",
   callback = function()
