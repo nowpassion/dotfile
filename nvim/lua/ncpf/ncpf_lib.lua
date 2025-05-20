@@ -1,30 +1,6 @@
-ncpf_lib = {
+local ncpf_lib = {
 
 }
-
--- Only support below 0.9.0
-local function gtags_check(path)
-	local gtags_path = path .. '/GTAGS'
-	local grtags_path = path .. '/GRTAGS'
-	local ret = 0
-
-	if vim.fn.has('nvim-0.9.0') == 0 then
-		return ret
-	end
-
-	if vim.fn.filereadable(gtags_path) == 0 then
-		return ret
-	end
-
-	vim.cmd('set csto=1')
-	vim.cmd('set nocst')
-	vim.cmd('set csprg=gtags-cscope')
-	vim.cmd('cs add ' .. gtags_path)
-	vim.cmd('cs add ' .. grtags_path)
-	ret = 1
-
-	return ret
-end
 
 local function cscope_check(path)
 	local ret = 0
@@ -34,30 +10,19 @@ local function cscope_check(path)
 		return ret
 	end
 
-	if vim.fn.has('nvim-0.9.0') == 0 then
-		vim.cmd('set tags=""')
-		vim.cmd('set csto=0')
-		vim.cmd('set cst')
-		vim.g.CCTreeUsePerl = 1
-		vim.cmd('cs add ' .. cscope_path)
-		vim.api.nvim_set_keymap('n', '<C-]>', ':cs find s <C-R>=expand("<cword>")<CR><CR>', { noremap = true })
-		vim.api.nvim_set_keymap('n', '<C-\\>', ':cs find c <C-R>=expand("<cword>")<CR><CR>', { noremap = true })
+	-- Cscope Wrapper
+	local cws_setup = require('cws').setup
+	if cws_setup and type(cws_setup) == "function" then
+		cws_setup(cscope_path)
+		vim.api.nvim_set_keymap('n', '<C-\\>', ':Cscope find c <C-R>=expand("<cword>")<CR><CR>', { noremap = true })
+		vim.api.nvim_set_keymap('n', '<C-]>', ':Cstag <C-R>=expand("<cword>")<CR><CR>', { noremap = true })
 		ret = 1
-	else
-		-- Cscope Wrapper
-		local cws_setup = require('cws').setup
-		if cws_setup and type(cws_setup) == "function" then
-			cws_setup(cscope_path)
-			vim.api.nvim_set_keymap('n', '<C-]>', ':Cscope find g <C-R>=expand("<cword>")<CR><CR>', { noremap = true })
-			vim.api.nvim_set_keymap('n', '<C-\\>', ':Cscope find c <C-R>=expand("<cword>")<CR><CR>', { noremap = true })
-			ret = 1
-		end
 	end
 
 	return ret
 end
 
-local function ctags_check(path, cscope_read)
+local function ctags_check(path)
 	local ret = 0
 	local ctags_path = path .. '/tags'
 
@@ -68,87 +33,65 @@ local function ctags_check(path, cscope_read)
 	vim.o.tags = ctags_path
 	ret = 1
 
-	if cscope_read == 1 then
-		if vim.fn.has('nvim-0.9.0') == 0 then
-			vim.cmd('set csto=1')
-			vim.cmd('set nocst')
-			vim.api.nvim_set_keymap('n', '<C-]>', ':cstag <C-R>=expand("<cword>")<CR><CR>', { noremap = true })
-		else
-			local cws_setup = require('cws').setup
-			if cws_setup and type(cws_setup) == "function" then
-				vim.api.nvim_set_keymap('n', '<C-]>', ':Cstag <C-R>=expand("<cword>")<CR><CR>', { noremap = true })
-			end
-		end
-	end
-
 	return ret
 end
 
 local function lsp_clangd_check(path)
+	local ret = 0
 	local clangd_path = path .. '/.cache/clangd'
 
 	if vim.fn.isdirectory(clangd_path) == 0 then
-		return;
+		return ret
 	end
 
 	vim.api.nvim_set_keymap('n', '<C-\\>', ':Telescope lsp_references<CR><CR>', { noremap = true })
 	vim.api.nvim_set_keymap('n', '<C-]>', ':Telescope lsp_definitions<CR><CR>', { noremap = true })
+
+	ret = 1
+	return ret
 end
 
 local function lsp_coc_ccls_check(path)
+	local ret = 0
 	local ccls_path = path .. '/.ccls-cache'
 	local coc_loaded = vim.g.coc_loaded
 
-	if coc_loaded and vim.fn.isdirectory(ccls_path) == 0 then
-		return;
+	if coc_loaded == 0 or vim.fn.isdirectory(ccls_path) == 0 then
+		return ret
 	end
 
 	vim.api.nvim_set_keymap('n', '<C-\\>', '<Plug>(coc-references)', {})
 	vim.cmd('set tagfunc=CocTagFunc')
+
+	ret = 1
+	return ret
 end
 
-local function lsp_conf_check(path)
-	lsp_clangd_check(path)	
-	lsp_coc_ccls_check(path)	
-end
+local codedb_funcs = {
+	cscope_check,
+	ctags_check,
+	lsp_clangd_check,
+	lsp_coc_ccls_check,
+}
 
 local function read_tags_project_root(path)
-	if gtags_check(path) == 1 then
-		ctags_check(path, 1)
-		return
-	end
-
-	if (cscope_check(path) == 1) then
-		ctags_check(path, 1)
-		return
-	else
-		if ctags_check(path, 0) == 1 then
-			return
+	local ret = 0;
+	for k, v in pairs(codedb_funcs) do
+		ret = v(path)
+		if ret == 1 then
+			break
 		end
 	end
-
-	lsp_conf_check(path)
-end
-
-function make_absolute_path(relative_path)
-    -- 현재 작업 디렉토리 가져오기
-    local current_dir = io.popen("pwd"):read("*l")
-
-    -- 상대 경로를 절대 경로로 변환
-    local absolute_path = current_dir .. "/" .. relative_path
-
-    return absolute_path
 end
 
 -- clangd driver
 local ncpf_clangd_arg = { }
 local ncpf_clangd_cmd = { }
-local ncpf_clangd_compiledb_option_str = ''
-local ncpf_clangd_driver_option_str = ''
+local ncpf_clangd_cmd_postfix = { }
 
 local function is_empty(s)
 	if s == '' or s == nil then
-		return true	
+		return true
 	end
 
 	return false
@@ -188,7 +131,7 @@ local function ncpf_setup_clangd(clangd_opt)
 	setup_npf(clangd_opt)
 end
 
-ncpf_lib.get_clangd_cmd = function() 
+ncpf_lib.get_clangd_cmd = function()
 	return ncpf_clangd_cmd
 end
 
@@ -248,7 +191,7 @@ local function Find_project_root(path)
 	Find_project_root(vim.fn.resolve(vim.fn.expand(ncpf_path)))
 end
 
-local loaded_ncpf = ''
+local loaded_ncpf = 0
 local ncpf_filename_opt = ''
 
 local function init_nvim_project_root()
