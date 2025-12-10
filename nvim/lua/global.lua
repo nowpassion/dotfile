@@ -91,9 +91,10 @@ Plug 'saadparwaiz1/cmp_luasnip'
 Plug 'ray-x/lsp_signature.nvim'
 Plug 'rafamadriz/friendly-snippets'
 ]]
-
+--[[
 -- Debug Adapter Protocol
 -- Plug 'mfussenegger/nvim-dap'
+--]]
 
 -- Telescope
 vim.cmd [[
@@ -110,7 +111,6 @@ Plug 'benfowler/telescope-luasnip.nvim'
 -- Documentation
 vim.cmd [[
 Plug 'danymat/neogen'
-Plug 'kkoomen/vim-doge', { 'do': { -> doge#install() } }
 ]]
 
 -- Copilot

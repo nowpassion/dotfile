@@ -43,16 +43,10 @@ vim.api.nvim_set_keymap('n', '<leader>dd', '<cmd>Telescope diagnostics<CR>', { n
 -- If you don't want to use the telescope plug-in but still want to see all the errors/warnings, comment out the telescope line and uncomment this:
 -- vim.api.nvim_set_keymap('n', '<leader>dd', '<cmd>lua vim.diagnostic.setloclist()<CR>', { noremap = true, silent = true })
 
--- vim-Doge
+-- Neogen
 -- Generate comment for current line
-vim.keymap.set('n', '<Leader>d', '<Plug>(doge-generate)')
--- Interactive mode comment todo-jumping
-vim.keymap.set('n', '<TAB>', '<Plug>(doge-comment-jump-forward)')
-vim.keymap.set('n', '<S-TAB>', '<Plug>(doge-comment-jump-backward)')
-vim.keymap.set('i', '<TAB>', '<Plug>(doge-comment-jump-forward)')
-vim.keymap.set('i', '<S-TAB>', '<Plug>(doge-comment-jump-backward)')
-vim.keymap.set('x', '<TAB>', '<Plug>(doge-comment-jump-forward)')
-vim.keymap.set('x', '<S-TAB>', '<Plug>(doge-comment-jump-backward)')
+local opts = { noremap = true, silent = true }
+vim.api.nvim_set_keymap("n", "<Leader>nf", ":lua require('neogen').generate()<CR>", opts)
 
 -- luasnip
 local ls = require("luasnip")

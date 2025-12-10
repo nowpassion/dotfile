@@ -1,6 +1,7 @@
 -- neogen
 require('neogen').setup {
-	{ 
-		snippet_engine = "luasnip" 
+	{
+		enabled = true,
+		snippet_engine = "luasnip",
 	}
 }

@@ -1,5 +1,6 @@
 -- Set up nvim-cmp.
 local cmp = require("cmp")
+local neogen = require('neogen')
 
 vim.opt.completeopt = "menu,menuone,noselect"
 
@@ -72,6 +73,27 @@ cmp.setup({
 				cmp.mapping.select_next_item()(fallback)
 			end
 		end,
+		-- Neogen integration
+		["<tab>"] = cmp.mapping(function(fallback)
+			if neogen.jumpable() then
+				neogen.jump_next()
+			else
+				fallback()
+			end
+		end, {
+		"i",
+		"s",
+		}),
+		["<S-tab>"] = cmp.mapping(function(fallback)
+			if neogen.jumpable(true) then
+				neogen.jump_prev()
+			else
+				fallback()
+			end
+		end, {
+		"i",
+		"s",
+		}),
 	}),
 	formatting = {
 		format = function(entry, item)
