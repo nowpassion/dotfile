@@ -120,6 +120,7 @@ local function setup_clangd_cmd(ncpf_clangd_arg)
 		"clangd",
 		"--background-index",
 		"--malloc-trim",
+		"--clang-tidy",
 	}
 
 	ncpf_clangd_cmd_postfix = {
