@@ -34,6 +34,12 @@ vim.opt.mouse = ''
 -- buffers
 vim.cmd('set hidden')
 
+-- CursorLine : 커서가 위치한 라인 표시
+vim.opt.cursorline = true
+
+-- Append Runtime
+vim.opt.rtp:append("~/.config/dotfile/nvim")
+
 --
 -- Plugins
 --
@@ -86,6 +92,9 @@ Plug 'ray-x/lsp_signature.nvim'
 Plug 'rafamadriz/friendly-snippets'
 ]]
 
+-- Debug Adapter Protocol
+-- Plug 'mfussenegger/nvim-dap'
+
 -- Telescope
 vim.cmd [[
 Plug 'BurntSushi/ripgrep'
@@ -117,6 +126,7 @@ vim.cmd('call plug#end()')
 --
 require("plugin_settings.lspconfig")
 require("plugin_settings.telescope")
+require("plugin_settings.luasnip")
 require("plugin_settings.nvim-cmp")
 require("plugin_settings.lsp_signature")
 require("plugin_settings.bufferline")

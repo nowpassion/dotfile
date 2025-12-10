@@ -43,8 +43,7 @@ vim.api.nvim_set_keymap('n', '<leader>dd', '<cmd>Telescope diagnostics<CR>', { n
 -- If you don't want to use the telescope plug-in but still want to see all the errors/warnings, comment out the telescope line and uncomment this:
 -- vim.api.nvim_set_keymap('n', '<leader>dd', '<cmd>lua vim.diagnostic.setloclist()<CR>', { noremap = true, silent = true })
 
--- neogen
---[[
+-- vim-Doge
 -- Generate comment for current line
 vim.keymap.set('n', '<Leader>d', '<Plug>(doge-generate)')
 -- Interactive mode comment todo-jumping
@@ -54,7 +53,61 @@ vim.keymap.set('i', '<TAB>', '<Plug>(doge-comment-jump-forward)')
 vim.keymap.set('i', '<S-TAB>', '<Plug>(doge-comment-jump-backward)')
 vim.keymap.set('x', '<TAB>', '<Plug>(doge-comment-jump-forward)')
 vim.keymap.set('x', '<S-TAB>', '<Plug>(doge-comment-jump-backward)')
---]]
+
+-- luasnip
+local ls = require("luasnip")
+
+--- Create a keymap that expands a snippet from vscode style snippets
+--- opts = {
+---     key = "<leader>c",        -- required: keymap
+---     trigger = "cmm",          -- required: snippet trigger to expand
+---     filetypes = {"c", "cpp"}, -- optional: restrict to these filetypes
+---     mode = { "i", "n" },      -- optional: default both normal+insert
+---     desc = "Expand snippet",  -- optional: description
+--- }
+local function create_snippet_keymap(opts)
+	vim.keymap.set(opts.mode or { "n", "i" }, opts.key, function()
+		local ft = vim.bo.filetype
+
+		-- If filetypes are specified, ensure current ft is allowed
+		if opts.filetypes and not vim.tbl_contains(opts.filetypes, ft) then
+			print("Snippet not available for filetype: " .. ft)
+			return
+		end
+
+		-- Load snippets for this filetype
+		local snippets = ls.get_snippets(ft)
+
+		-- Find the target snippet by trigger
+		for _, snip in ipairs(snippets or {}) do
+			if snip.trigger == opts.trigger then
+				ls.snip_expand(snip)
+				return
+			end
+		end
+
+		print("Snippet '" .. opts.trigger .. "' not found for filetype: " .. ft)
+	end, { desc = opts.desc or ("Expand snippet: " .. opts.trigger) })
+end
+
+local mappings = {
+	{
+		key = "\\cfr",
+		trigger = "mcomment",
+		filetypes = { "c", "cpp", "h" },
+		desc = "Insert C multi-line comment block",
+	},
+	{
+		key = "\\ss",
+		trigger = "switch",
+		filetypes = { "c", "cpp" },
+		desc = "Insert switch/case",
+	},
+}
+
+for _, m in ipairs(mappings) do
+    create_snippet_keymap(m)
+end
 
 -- VimSignify
 vim.api.nvim_set_keymap('n', '<A-Down>', ':call sy#jump#next_hunk(v:count1)<CR>', { noremap = true })

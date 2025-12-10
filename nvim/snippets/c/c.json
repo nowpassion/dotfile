@@ -1,0 +1,11 @@
+{
+    "C Multiline Comment": {
+        "prefix": "mcomment",
+        "body": [
+            "/*",
+            " * $1",
+            " */"
+        ],
+        "description": "My custom multiline comment"
+    }
+}
