@@ -10,7 +10,93 @@ vim.api.nvim_set_keymap('n', '<C-PageUp>', ':bprevious<CR>', { noremap = true })
 vim.api.nvim_set_keymap('n', '<C-PageDown>', ':bnext<CR>', { noremap = true })
 
 -- man
-vim.api.nvim_set_keymap('n', '<S-k>', ':Man<CR>', { noremap = true })
+----------------------------------------------------------
+-- man page 존재 여부 확인
+----------------------------------------------------------
+local function man_exists(section, word)
+    local cmd = string.format("man -w %s %s 2>/dev/null", section, word)
+    local output = vim.fn.system(cmd)
+    return output ~= nil and output ~= ""
+end
+
+----------------------------------------------------------
+-- manpage 문자열로 가져오기
+----------------------------------------------------------
+local function get_manpage(section, word)
+    local cmd = string.format("MANPAGER=cat man %s %s 2>/dev/null", section, word)
+    return vim.fn.systemlist(cmd)
+end
+
+----------------------------------------------------------
+-- 새로운 scratch buffer 에 출력
+----------------------------------------------------------
+local function open_man_in_new_buffer(section, word)
+    local lines = get_manpage(section, word)
+    if not lines or #lines == 0 then
+        vim.notify("Failed to load manpage", vim.log.levels.ERROR)
+        return
+    end
+
+    -- 새 버퍼 생성
+    local buf = vim.api.nvim_create_buf(true, false)
+    local win = vim.api.nvim_get_current_win()
+
+    -- 버퍼 이름 설정 (중복 방지)
+    local name = string.format("man://%s(%s)", word, section)
+    vim.api.nvim_buf_set_name(buf, name)
+
+    -- 내용 삽입
+    vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+
+    -- 현재 창에 배치
+    vim.api.nvim_win_set_buf(win, buf)
+
+    -- 읽기 전용 옵션 및 하이라이트
+    vim.bo[buf].buftype = ""           -- normal buffer
+    vim.bo[buf].bufhidden = "wipe"
+    vim.bo[buf].swapfile = false
+	vim.bo[buf].modified = false
+    vim.bo[buf].modifiable = false     -- 읽기 전용
+    vim.bo[buf].filetype = "man"       -- syntax highlight
+end
+
+----------------------------------------------------------
+-- SHIFT-K 맵핑
+----------------------------------------------------------
+vim.keymap.set("n", "K", function()
+    local word = vim.fn.expand("<cword>")
+    if not word or word == "" then
+        vim.notify("No word under cursor", vim.log.levels.WARN)
+        return
+    end
+
+    local count = vim.v.count
+
+    -- 숫자 + K → 해당 섹션만
+    if count > 0 then
+        local sec = tostring(count)
+        if man_exists(sec, word) then
+            open_man_in_new_buffer(sec, word)
+        else
+            vim.notify(string.format("No manpage for '%s' in section %s", word, sec), vim.log.levels.ERROR)
+        end
+        return
+    end
+
+    -- K → section 2 → 3 순서 검색
+    local search_order = { 2, 3 }
+    for _, sec in ipairs(search_order) do
+        if man_exists(sec, word) then
+            open_man_in_new_buffer(sec, word)
+            return
+        end
+    end
+
+    vim.notify(string.format("No manpage found for '%s' in sections 2, 3", word),
+               vim.log.levels.ERROR)
+end, { silent = true })
+
+-- Manpager
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "man",
   group = vim.api.nvim_create_augroup("ManUserConfigs", { clear = true }),
@@ -84,16 +170,18 @@ local function create_snippet_keymap(opts)
 	end, { desc = opts.desc or ("Expand snippet: " .. opts.trigger) })
 end
 
+-- np (nowpassion) custom snippets
+-- CHECK ~/.config/nvim/snippets 
 local mappings = {
 	{
-		key = "\\cfr",
-		trigger = "mcomment",
+		key = "<Leader>ncm",
+		trigger = "np_custom_mcomment",
 		filetypes = { "c", "cpp", "h" },
 		desc = "Insert C multi-line comment block",
 	},
 	{
-		key = "\\ss",
-		trigger = "switch",
+		key = "<Leader>ncs",
+		trigger = "np_custom_switchcase",
 		filetypes = { "c", "cpp" },
 		desc = "Insert switch/case",
 	},

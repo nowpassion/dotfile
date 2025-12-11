@@ -1,11 +1,30 @@
 {
     "C Multiline Comment": {
-        "prefix": "mcomment",
+        "prefix": "np_custom_mcomment",
         "body": [
             "/*",
             " * $1",
             " */"
         ],
         "description": "My custom multiline comment"
+    },
+    "Switch Case Template": {
+        "prefix": "np_custom_switchcase",
+        "body": [
+            "switch ($0${1:variable}) {",
+            "    case ${2:VALUE}:",
+            "        ${3:// TODO: 처리 코드}",
+            "        break;",
+            "",
+            "    case ${4:VALUE}:",
+            "        ${5:// TODO: 처리 코드}",
+            "        break;",
+            "",
+            "    default:",
+            "        ${6:// TODO: 기본 처리}",
+            "        break;",
+            "}"
+        ],
+        "description": "C 기본 switch-case 구조 생성"
     }
 }
