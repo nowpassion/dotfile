@@ -17,7 +17,7 @@ local function table_concat(table1, table2)
 	end
 end
 
--- define a function to spring a string with give separator
+-- define a function to split a string with given separator
 local function strsplit(inputstr, sep)
 	-- define an array
 	local t = { }
@@ -231,13 +231,13 @@ local function Find_project_root(path)
 		return codedb_setup(path)
 	end
 
-	-- 재귀적 호출에 의해 최상단까지 파일을 못찾은 경우 
+	-- 재귀적 호출에 의해 최상단까지 파일을 못 찾은 경우 
 	if path == '/' then
 		print('[ERROR] => Not found nvim c project file (/)')
 		return 0
 	end
 
-	-- 재귀적 호출에 의해 정의된 프로젝트 최상단까지 파일을 못찾은 경우 
+	-- 재귀적 호출에 의해 정의된 프로젝트 최상단까지 파일을 못 찾은 경우 
 	if path == ncpf_top_dir then
 		print('[ERROR] => Not found nvim c project file (top dir)', ncpf_top_dir)
 		return 0
@@ -272,7 +272,7 @@ local function init_nvim_project_root()
 
 	if Find_project_root(cwd) == 0 then
 		print('[NOTICE] => read code db from current directory.')
-		-- TOOO : error process ??
+		-- TODO : error process ??
 	end
 end
 
@@ -295,7 +295,7 @@ local function set_filetype_settings(filename)
 			init_nvim_project_root()
 		end,
 
-		-- 여기 다른 파일 이름 패턴에 대한 설정 추가
+		-- 여기에 다른 파일 이름 패턴에 대한 설정 추가
 	}
 
 	for pattern, func in pairs(patterns) do
@@ -314,7 +314,7 @@ ncpf_lib.ncpf_setup = function(top_dir, root_marker_file)
 end
 
 ncpf_lib.unset_ncpf = function()
-	loaded_ncpf = 1
+	loaded_ncpf = 0
 end
 
 return ncpf_lib
