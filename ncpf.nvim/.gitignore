@@ -1,0 +1,21 @@
+# Vim swap files
+*.swp
+*.swo
+*~
+
+# Tag files
+tags
+tags.lock
+tags.temp
+
+# LSP cache
+.ccls-cache/
+
+# Compiled Lua
+*.luac
+
+# macOS
+.DS_Store
+
+# Testing
+test/

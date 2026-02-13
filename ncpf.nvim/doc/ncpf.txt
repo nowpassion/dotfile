@@ -1,0 +1,154 @@
+*ncpf.txt*  Neovim C Project File - Automatic C/C++ project configuration
+
+Author:  nowpassion
+License: MIT License
+
+==============================================================================
+CONTENTS                                                        *ncpf-contents*
+
+    1. Introduction ..................... |ncpf-introduction|
+    2. Requirements ..................... |ncpf-requirements|
+    3. Installation ..................... |ncpf-installation|
+    4. Usage ............................ |ncpf-usage|
+    5. Configuration .................... |ncpf-configuration|
+    6. Key Mappings ..................... |ncpf-key-mappings|
+    7. Functions ........................ |ncpf-functions|
+    8. Troubleshooting .................. |ncpf-troubleshooting|
+
+==============================================================================
+1. INTRODUCTION                                             *ncpf-introduction*
+
+NCPF (Neovim C Project File) is a plugin that automatically detects and
+configures C/C++ project environments for code navigation and LSP support.
+
+Features:
+  - Automatic project root detection using marker files
+  - Support for multiple code navigation tools (clangd, cscope, ctags, ccls)
+  - Flexible configuration options
+  - Smart key mapping setup
+
+==============================================================================
+2. REQUIREMENTS                                             *ncpf-requirements*
+
+Required:
+  - Neovim >= 0.10
+
+Optional (at least one recommended):
+  - clangd (for LSP support)
+  - cscope (for code browsing)
+  - ctags (for tag navigation)
+  - ccls with coc.nvim (for LSP support)
+
+Optional Neovim plugins:
+  - nvim-lspconfig (for clangd)
+  - nvim-cmp (for completion)
+  - telescope.nvim (for LSP navigation)
+  - coc.nvim (for ccls)
+  - cws (for cscope support)
+
+==============================================================================
+3. INSTALLATION                                             *ncpf-installation*
+
+Using lazy.nvim: >
+    {
+      'nowpassion/ncpf.nvim',
+      ft = { 'c', 'cpp', 'h', 'hpp', 'cc' },
+      config = function()
+        require('ncpf.ncpf').init()
+      end,
+    }
+<
+
+Using packer.nvim: >
+    use {
+      'nowpassion/ncpf.nvim',
+      ft = { 'c', 'cpp', 'h', 'hpp', 'cc' },
+      config = function()
+        require('ncpf.ncpf').init()
+      end,
+    }
+<
+
+==============================================================================
+4. USAGE                                                           *ncpf-usage*
+
+Basic setup in your init.lua: >
+    require('ncpf.ncpf').init()
+<
+
+With custom top directory: >
+    require('ncpf.ncpf').init('/path/to/projects')
+<
+
+Project setup:
+  1. Create marker file in project root: >
+      touch .nvim_c_project_root
+<
+  2. Ensure one of these exists:
+     - compile_commands.json (for clangd)
+     - cscope.out (for cscope)
+     - tags (for ctags)
+     - .ccls-cache/ (for ccls)
+
+  3. Open any C/C++ file in your project
+
+==============================================================================
+5. CONFIGURATION                                           *ncpf-configuration*
+
+                                                      *ncpf.init()*
+ncpf.init({top_dir})
+    Initialize the NCPF plugin.
+
+    Parameters:
+      {top_dir}  (string, optional) Top-level directory to search for
+                 projects. Defaults to $HOME if not specified.
+
+    Example: >
+        require('ncpf.ncpf').init('/home/user/projects')
+<
+
+Advanced clangd configuration:
+  Create `.ncpf_clangd_option` in project root: >
+    --compile-commands-dir=/path/to/build
+    --query-driver=/path/to/compiler
+<
+
+==============================================================================
+6. KEY MAPPINGS                                             *ncpf-key-mappings*
+
+When using clangd LSP:
+  <C-\>  Find references (Telescope)
+  <C-]>  Go to definition (Telescope)
+
+When using cscope:
+  <C-\>  Find symbol references
+  <C-]>  Go to tag
+
+When using COC + ccls:
+  <C-\>  Find references
+  <C-]>  Go to definition
+
+==============================================================================
+7. FUNCTIONS                                                   *ncpf-functions*
+
+*ncpf.init()*
+    Initialize the NCPF plugin. See |ncpf-configuration|.
+
+==============================================================================
+8. TROUBLESHOOTING                                       *ncpf-troubleshooting*
+
+"Not found nvim c project file" error:
+  - Ensure .nvim_c_project_root exists in project root
+  - Check file is within search scope
+
+"compiledb_path is not exist" error:
+  - Generate compile_commands.json using CMake or Bear
+  - Verify file path in .ncpf_clangd_option if using custom path
+
+LSP not working:
+  - Ensure clangd is installed: `clangd --version`
+  - Verify compile_commands.json is valid JSON
+  - Check nvim-lspconfig and nvim-cmp are installed
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:
