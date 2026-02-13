@@ -1,5 +1,7 @@
 # ncpf.nvim
 
+> [한국어 문서](README.ko.md) | English
+
 **NCPF** (Neovim C Project File) is a Neovim plugin that automatically detects and configures C/C++ project environments for code navigation and LSP support.
 
 ## Features
