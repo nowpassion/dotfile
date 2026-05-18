@@ -49,7 +49,6 @@ vim.cmd('call plug#begin()')
 vim.cmd [[
 Plug 'zootedb0t/citruszest.nvim'
 Plug 'folke/tokyonight.nvim'
-Plug 'loctvl842/monokai-pro.nvim'
 ]]
 
 -- lualine, bufferline
@@ -63,7 +62,7 @@ Plug 'nvim-tree/nvim-web-devicons'
 vim.cmd [[
 Plug 'juneedahamed/vc.vim'
 Plug 'liuchengxu/vista.vim'
-Plug 'bsdelf/bufferhint' "opened buffer list 
+Plug 'bsdelf/bufferhint'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'folke/which-key.nvim'
 Plug 'mhinz/vim-signify'
@@ -87,26 +86,28 @@ Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/nvim-cmp'
 Plug 'L3MON4D3/LuaSnip', {'tag': 'v2.*', 'do': 'make install_jsregexp'}
-Plug 'saadparwaiz1/cmp_luasnip'
 Plug 'ray-x/lsp_signature.nvim'
 Plug 'rafamadriz/friendly-snippets'
 ]]
 --[[
--- Debug Adapter Protocol
--- Plug 'mfussenegger/nvim-dap'
+- Debug Adapter Protocol
+Plug 'mfussenegger/nvim-dap'
 --]]
 
 -- Telescope
 vim.cmd [[
+Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'BurntSushi/ripgrep'
 Plug 'nvim-tree/nvim-web-devicons'
 Plug 'nvim-lua/plenary.nvim'
-Plug 'nvim-treesitter/nvim-treesitter'
 Plug 'sharkdp/fd'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-file-browser.nvim'
 Plug 'benfowler/telescope-luasnip.nvim'
 ]]
+--[[
+Plug 'nvim-treesitter/nvim-treesitter'
+--]]
 
 -- Documentation
 vim.cmd [[
