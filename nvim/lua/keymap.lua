@@ -39,8 +39,8 @@ vim.api.nvim_set_keymap('n', 'gb', ':VCBlame<CR>', { noremap = true })
 
 -- Diagnostic
 vim.api.nvim_set_keymap('n', '<C-D>', '<cmd>lua vim.diagnostic.open_float()<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<C-Up>', '<cmd>lua vim.diagnostic.goto_prev()<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('n', '<C-Down>', '<cmd>lua vim.diagnostic.goto_next()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<C-Up>', '<cmd>lua vim.diagnostic.jump({ count = -1 })<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<C-Down>', '<cmd>lua vim.diagnostic.jump({ count = 1 })<CR>', { noremap = true, silent = true })
 -- The following command requires plug-ins "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim", and optionally "kyazdani42/nvim-web-devicons" for icon support
 vim.api.nvim_set_keymap('n', '<leader>dd', '<cmd>Telescope diagnostics<CR>', { noremap = true, silent = true })
 -- If you don't want to use the telescope plug-in but still want to see all the errors/warnings, comment out the telescope line and uncomment this:
@@ -63,7 +63,14 @@ vim.api.nvim_create_autocmd("FileType", {
 
 -- man
 vim.keymap.set("n", "K", function()
-	keymap_fn_man_open()
+  local ft = vim.bo.filetype
+
+  -- C 계열이면 man, 그 외에는 LSP hover
+  if ft == "c" or ft == "cpp" or ft == "objc" or ft == "objcpp" then
+    keymap_fn_man_open()
+  else
+    vim.lsp.buf.hover()
+  end
 end, { silent = true })
 
 -- Convert comment style
