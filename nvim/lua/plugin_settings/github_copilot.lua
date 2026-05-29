@@ -9,7 +9,5 @@ if file then
 	end
 
 	file:close()
-else
-	vim.g.loaded_copilot = 1;
 end
 
