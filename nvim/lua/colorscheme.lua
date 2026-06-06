@@ -39,6 +39,10 @@ require("tokyonight").setup({
 			-- bg = "#3b4261",
 			-- bold = true,
 		}
+		highlights.Type = {
+			fg = colors.blue1,
+			bold = true
+		}
 	end
 
 })
